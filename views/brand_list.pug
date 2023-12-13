@@ -8,7 +8,7 @@ block content
   dl 
     for brand in brand_list 
       dt
-        a(href=brand.url) #{brand.name}
+        a(href=brand.url)= brand.name
       dd= brand.description
 
     else
