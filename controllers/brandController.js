@@ -1,6 +1,7 @@
 const Brand = require("../models/brand");
 const Fragrance = require("../models/fragrance");
 const asyncHandler = require("express-async-handler");
+const { body, validationResult } = require("express-validator");
 
 // Display list of all Brands.
 exports.brand_list = asyncHandler(async (req, res, next) => {
@@ -34,13 +35,38 @@ exports.brand_detail = asyncHandler(async (req, res, next) => {
 
 // Display Brand create form on GET.
 exports.brand_create_get = asyncHandler(async (req, res, next) => {
-  res.send("NOT IMPLEMENTED: Brand create GET");
+  res.render("brand_create", { title: "Create Brand" });
 });
 
 // Handle Brand create on POST.
-exports.brand_create_post = asyncHandler(async (req, res, next) => {
-  res.send("NOT IMPLEMENTED: Brand create POST");
-});
+exports.brand_create_post = [
+  body("name", "Name must not be empty.").trim().isLength({ min: 1 }).escape(),
+  body("description", "Description must not be empty.")
+    .trim()
+    .isLength({ min: 1 })
+    .escape(),
+
+  asyncHandler(async (req, res, next) => {
+    const errors = validationResult(req);
+
+    const brand = new Brand({
+      name: req.body.name,
+      description: req.body.description,
+    });
+
+    if (!errors.isEmpty()) {
+      res.render("brand_create", {
+        title: "Create Brand",
+        errors: errors.array(),
+        brand,
+      });
+      return;
+    }
+
+    await brand.save();
+    res.redirect(brand.url);
+  }),
+];
 
 // Display Brand delete form on GET.
 exports.brand_delete_get = asyncHandler(async (req, res, next) => {
