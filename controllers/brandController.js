@@ -1,4 +1,5 @@
 const Brand = require("../models/brand");
+const Fragrance = require("../models/fragrance");
 const asyncHandler = require("express-async-handler");
 
 // Display list of all Brands.
@@ -13,7 +14,22 @@ exports.brand_list = asyncHandler(async (req, res, next) => {
 
 // Display detail page for specific Brand.
 exports.brand_detail = asyncHandler(async (req, res, next) => {
-  res.send(`NOT IMPLEMENTED: Brand detail: ${req.params.id}`);
+  const [brand, allFragrancesOfBrand] = await Promise.all([
+    Brand.findById(req.params.id)
+      .orFail((msg) => {
+        const err = new Error(msg);
+        err.status = 404;
+        return next(err);
+      })
+      .exec(),
+    Fragrance.find({ brand: req.params.id }).sort({ name: 1 }).exec(),
+  ]);
+
+  res.render("brand_detail", {
+    title: "Brand Detail",
+    brand_fragrances: allFragrancesOfBrand,
+    brand,
+  });
 });
 
 // Display Brand create form on GET.
