@@ -11,4 +11,4 @@ BrandSchema.virtual("url").get(function () {
   return `/brand/${this._id}`;
 });
 
-mocule.exports = mongoose.model("Brand", BrandSchema);
+module.exports = mongoose.model("Brand", BrandSchema);
