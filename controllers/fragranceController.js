@@ -1,3 +1,4 @@
+const Fragrance = require("../models/fragrance");
 const asyncHandler = require("express-async-handler");
 
 // Display list of all Fragrances.
@@ -7,7 +8,19 @@ exports.fragrance_list = asyncHandler(async (req, res, next) => {
 
 // Display detail page for specific Fragrance.
 exports.fragrance_detail = asyncHandler(async (req, res, next) => {
-  res.send(`NOT IMPLEMENTED: Fragrance detail: ${req.params.id}`);
+  const fragrance = await Fragrance.findById(req.params.id)
+    .populate("brand")
+    .orFail(() => {
+      const err = new Error("Fragrance not found");
+      err.status = 404;
+      return next(err);
+    })
+    .exec();
+
+  res.render("fragrance_detail", {
+    title: "Fragrance Detail",
+    fragrance,
+  });
 });
 
 // Display Fragrance create form on GET.
