@@ -9,13 +9,23 @@ body {
   font: 16px system-ui, sans-serif;
 }
 
+dt {
+  font-size: 1.6em;
+}
+
 a {
   color: #00b7ff;
   text-decoration: none;
+}
+
+dd {
+  margin: 0;
+  padding-bottom: 20px;
 }
 
 .sidebar-nav {
   padding-top: 20px;
   padding: 0;
   list-style: none;
+  flex-shrink: 0;
 }
