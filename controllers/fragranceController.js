@@ -1,5 +1,7 @@
 const Fragrance = require("../models/fragrance");
+const Brand = require("../models/brand");
 const asyncHandler = require("express-async-handler");
+const { body, validationResult } = require("express-validator");
 
 // Display list of all Fragrances.
 exports.fragrance_list = asyncHandler(async (req, res, next) => {
@@ -33,13 +35,63 @@ exports.fragrance_detail = asyncHandler(async (req, res, next) => {
 
 // Display Fragrance create form on GET.
 exports.fragrance_create_get = asyncHandler(async (req, res, next) => {
-  res.send("NOT IMPLEMENTED: Fragrance create GET");
+  const allBrands = await Brand.find().sort({ name: 1 }).exec();
+
+  res.render("fragrance_form", {
+    title: "Create Fragrance",
+    brands: allBrands,
+  });
 });
 
 // Handle Fragrance create on POST.
-exports.fragrance_create_post = asyncHandler(async (req, res, next) => {
-  res.send("NOT IMPLEMENTED: Fragrance create POST");
-});
+exports.fragrance_create_post = [
+  body("name", "Name must be present.").trim().isLength({ min: 1 }).escape(),
+  body("description", "Description must be present.")
+    .trim()
+    .isLength({ min: 1 })
+    .escape(),
+  body("brand", "Brand must be present.").trim().isLength({ min: 1 }).escape(),
+  body("number_in_stock", "Number_in_stock must be present.")
+    .trim()
+    .isLength({ min: 1 })
+    .isInt({ min: 0 })
+    .withMessage("Number_in_stock must be a number more than or equal to 0")
+    .escape(),
+  body("price", "Price must be present.")
+    .trim()
+    .isLength({ min: 1 })
+    .isCurrency()
+    .withMessage(
+      "Price must be a valid currency value (100, 100.00, 100,000.00 etc.)."
+    )
+    .escape(),
+
+  asyncHandler(async (req, res, next) => {
+    const errors = validationResult(req);
+
+    const fragrance = new Fragrance({
+      name: req.body.name,
+      description: req.body.description,
+      brand: req.body.brand,
+      number_in_stock: req.body.number_in_stock,
+      price: req.body.price,
+    });
+
+    if (!errors.isEmpty()) {
+      const allBrands = await Brand.find().sort({ name: 1 }).exec();
+      res.render("fragrance_form", {
+        title: "Create Fragrance",
+        brands: allBrands,
+        errors: errors.toArray(),
+        fragrance,
+      });
+      return;
+    }
+
+    await fragrance.save();
+    res.redirect(fragrance.url);
+  }),
+];
 
 // Display Fragrance delete form on GET.
 exports.fragrance_delete_get = asyncHandler(async (req, res, next) => {
