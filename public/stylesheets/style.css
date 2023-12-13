@@ -29,7 +29,8 @@ form {
 }
 
 form input,
-form textarea {
+form textarea,
+form select {
   margin-bottom: 8px;
   font: inherit;
 }
