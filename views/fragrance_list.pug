@@ -1,0 +1,14 @@
+extends layout 
+
+block content 
+  h1= title 
+
+  dl 
+    for fragrance in fragrance_list 
+      dt  
+        a(href=fragrance.url)= fragrance.name
+        |  (#{fragrance.brand.name})
+      dd= fragrance.description 
+    
+    else  
+      dt There are no fragrances.
