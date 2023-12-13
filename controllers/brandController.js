@@ -16,8 +16,8 @@ exports.brand_list = asyncHandler(async (req, res, next) => {
 exports.brand_detail = asyncHandler(async (req, res, next) => {
   const [brand, allFragrancesOfBrand] = await Promise.all([
     Brand.findById(req.params.id)
-      .orFail((msg) => {
-        const err = new Error(msg);
+      .orFail(() => {
+        const err = new Error("Brand not found");
         err.status = 404;
         return next(err);
       })
