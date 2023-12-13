@@ -23,9 +23,34 @@ dd {
   padding-bottom: 20px;
 }
 
+form {
+  display: flex;
+  flex-direction: column;
+}
+
+form input,
+form textarea {
+  margin-bottom: 8px;
+  font: inherit;
+}
+
+form button {
+  width: max-content;
+  padding: 0.5em 1em;
+  font: inherit;
+}
+
+.form-control {
+  resize: vertical;
+}
+
 .sidebar-nav {
   padding-top: 20px;
   padding: 0;
   list-style: none;
   flex-shrink: 0;
+}
+
+.content {
+  flex: 1;
 }
