@@ -1,8 +1,14 @@
+const Brand = require("../models/brand");
 const asyncHandler = require("express-async-handler");
 
 // Display list of all Brands.
 exports.brand_list = asyncHandler(async (req, res, next) => {
-  res.send("NOT IMPLEMENTED: Brand List");
+  const allBrands = await Brand.find().sort({ name: 1 }).exec();
+
+  res.render("brand_list", {
+    title: "Fragrance Finder Home",
+    brand_list: allBrands,
+  });
 });
 
 // Display detail page for specific Brand.
