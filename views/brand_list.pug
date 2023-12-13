@@ -1,0 +1,12 @@
+extends layout
+
+block content
+  h1= title
+  p Fragrance Finder is the ultimate fragrance inventory website that allows you to create, read, update, and delete (CRUD) information on fragrances and brands. Whether you want to buy, sell, or swap fragrances, or simply enjoy the beauty of scents, you will find everything you need at Fragrance Finder. Join us today and unleash your inner fragrance fan!
+
+  h1 Brand List:
+  dl 
+    for brand in brand_list 
+      dt
+        a(href=brand.url) #{brand.name}
+      dd= brand.description
