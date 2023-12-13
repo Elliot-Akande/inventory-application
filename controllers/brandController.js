@@ -35,7 +35,7 @@ exports.brand_detail = asyncHandler(async (req, res, next) => {
 
 // Display Brand create form on GET.
 exports.brand_create_get = asyncHandler(async (req, res, next) => {
-  res.render("brand_create", { title: "Create Brand" });
+  res.render("brand_form", { title: "Create Brand" });
 });
 
 // Handle Brand create on POST.
@@ -55,7 +55,7 @@ exports.brand_create_post = [
     });
 
     if (!errors.isEmpty()) {
-      res.render("brand_create", {
+      res.render("brand_form", {
         title: "Create Brand",
         errors: errors.array(),
         brand,
