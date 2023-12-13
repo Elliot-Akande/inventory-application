@@ -3,7 +3,15 @@ const asyncHandler = require("express-async-handler");
 
 // Display list of all Fragrances.
 exports.fragrance_list = asyncHandler(async (req, res, next) => {
-  res.send("NOT IMPLEMENTED: Fragrance List");
+  const allFragrances = await Fragrance.find()
+    .sort({ name: 1 })
+    .populate("brand")
+    .exec();
+
+  res.render("fragrance_list", {
+    title: "All Fragrances",
+    fragrance_list: allFragrances,
+  });
 });
 
 // Display detail page for specific Fragrance.
