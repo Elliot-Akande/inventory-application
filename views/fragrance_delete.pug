@@ -1,0 +1,10 @@
+extends layout
+
+block content 
+  h1 #{title}: #{fragrance.name}
+
+  p Do you really want to delete this Fragrance?
+
+  form(action="", method="post") 
+      input#fragranceid.form-control(type='hidden' name='fragranceid' required='true' value=fragrance._id)
+      button(type='submit') Delete
