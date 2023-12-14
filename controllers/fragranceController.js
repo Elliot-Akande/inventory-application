@@ -112,10 +112,75 @@ exports.fragrance_delete_post = asyncHandler(async (req, res, next) => {
 
 // Display Fragrance update form on GET.
 exports.fragrance_update_get = asyncHandler(async (req, res, next) => {
-  res.send("NOT IMPLEMENTED: Fragrance update GET");
+  const [fragrance, allBrands] = await Promise.all([
+    Fragrance.findById(req.params.id)
+      .orFail(() => {
+        const err = new Error("Fragrance not found");
+        err.status = 404;
+        return next(err);
+      })
+      .exec(),
+    Brand.find().sort({ name: 1 }).exec(),
+  ]);
+
+  res.render("fragrance_form", {
+    title: "Update Fragrance",
+    brands: allBrands,
+    fragrance,
+  });
 });
 
 // Handle Fragrance update on POST.
-exports.fragrance_update_post = asyncHandler(async (req, res, next) => {
-  res.send("NOT IMPLEMENTED: Fragrance update POST");
-});
+exports.fragrance_update_post = [
+  body("name", "Name must be present.").trim().isLength({ min: 1 }).escape(),
+  body("description", "Description must be present.")
+    .trim()
+    .isLength({ min: 1 })
+    .escape(),
+  body("brand", "Brand must be present.").trim().isLength({ min: 1 }).escape(),
+  body("number_in_stock", "Number_in_stock must be present.")
+    .trim()
+    .isLength({ min: 1 })
+    .isInt({ min: 0 })
+    .withMessage("Number_in_stock must be a number more than or equal to 0")
+    .escape(),
+  body("price", "Price must be present.")
+    .trim()
+    .isLength({ min: 1 })
+    .isCurrency()
+    .withMessage(
+      "Price must be a valid currency value (100, 100.00, 100,000.00 etc.)."
+    )
+    .escape(),
+
+  asyncHandler(async (req, res, next) => {
+    const errors = validationResult(req);
+
+    const fragrance = new Fragrance({
+      name: req.body.name,
+      description: req.body.description,
+      brand: req.body.brand,
+      number_in_stock: req.body.number_in_stock,
+      price: req.body.price,
+      _id: req.params.id,
+    });
+
+    if (!errors.isEmpty()) {
+      const allBrands = await Brand.find().sort({ name: 1 }).exec();
+      res.render("fragrance_form", {
+        title: "Update Fragrance",
+        brands: allBrands,
+        errors: errors.toArray(),
+        fragrance,
+      });
+      return;
+    }
+
+    const updatedFragrance = await Fragrance.findByIdAndUpdate(
+      req.params.id,
+      fragrance,
+      {}
+    );
+    res.redirect(updatedFragrance.url);
+  }),
+];
