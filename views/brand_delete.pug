@@ -1,0 +1,24 @@
+extends layout 
+
+block content
+  h1 #{title}: #{brand.name}
+
+  if brand_fragrances.length
+    p #[strong Delete the following fragrances before attempting to delete this author.]
+
+    div(style='margin-left: 20px;margin-top:20px')
+
+      h2 Fragrances
+
+      dl 
+      each fragrance in brand_fragrances  
+        dt 
+          a(href=fragrance.url)= fragrance.name 
+        dd= fragrance.description
+
+  else
+    p Do you really want to delete this Brand?
+
+    form(action="", method="post") 
+      input#brandid.form-control(type='hidden' name='brandid' required='true' value=brand._id)
+      button(type='submit') Delete
