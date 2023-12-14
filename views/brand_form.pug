@@ -8,7 +8,7 @@ block content
     input#name.form-control(type='text', placeholder='Dior, Chanel etc.' name='name' required='true' value=(undefined === brand ? '' : brand.name))
 
     label(for='description') Description:
-    textarea#description.form-control(type='text', name='description' required='true' value=(undefined === brand ? '' : brand.description))
+    textarea#description.form-control(type='text', name='description' required='true') #{undefined === brand ? '' : brand.description}
     
     button(type='submit') Submit 
   
