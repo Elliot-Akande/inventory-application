@@ -70,12 +70,40 @@ exports.brand_create_post = [
 
 // Display Brand delete form on GET.
 exports.brand_delete_get = asyncHandler(async (req, res, next) => {
-  res.send("NOT IMPLEMENTED: Brand delete GET");
+  const [brand, allFragrancesOfBrand] = await Promise.all([
+    Brand.findById(req.params.id).exec(),
+    Fragrance.find({ brand: req.params.id }, "name description").exec(),
+  ]);
+
+  if (brand === null) {
+    res.redirect("/");
+  }
+
+  res.render("brand_delete", {
+    title: "Delete Brand",
+    brand_fragrances: allFragrancesOfBrand,
+    brand,
+  });
 });
 
 // Handle Brand delete on POST.
 exports.brand_delete_post = asyncHandler(async (req, res, next) => {
-  res.send("NOT IMPLEMENTED: Brand delete POST");
+  const [brand, allFragrancesOfBrand] = await Promise.all([
+    Brand.findById(req.params.id).exec(),
+    Fragrance.find({ brand: req.params.id }, "name description").exec(),
+  ]);
+
+  if (allFragrancesOfBrand.length > 0) {
+    res.render("brand_delete", {
+      title: "Delete Brand",
+      brand_fragrances: allFragrancesOfBrand,
+      brand,
+    });
+    return;
+  }
+
+  await Brand.findByIdAndDelete(req.body.brandid);
+  res.redirect("/");
 });
 
 // Display Brand update form on GET.
