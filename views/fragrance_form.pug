@@ -8,7 +8,7 @@ block content
     input#name.form-control(type='text', name='name' required='true' value=(undefined === fragrance ? '' : fragrance.name))
 
     label(for='description') Description:
-    textarea#description.form-control(type='text' name='description' required='true' value=(undefined === fragrance ? '' : fragrance.description))
+    textarea#description.form-control(type='text' name='description' required='true') #{undefined === fragrance ? '' : fragrance.description}
     
     label(for='brand') Brand:
     select#brand.form-control(placeholder='Select Brand' name='brand' required='true' value=(undefined === fragrance ? '' : fragrance.brand))
