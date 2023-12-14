@@ -95,12 +95,19 @@ exports.fragrance_create_post = [
 
 // Display Fragrance delete form on GET.
 exports.fragrance_delete_get = asyncHandler(async (req, res, next) => {
-  res.send("NOT IMPLEMENTED: Fragrance delete GET");
+  const fragrance = await Fragrance.findById(req.params.id).exec();
+
+  if (fragrance === null) {
+    res.redirect("/fragrances");
+  }
+
+  res.render("fragrance_delete", { title: "Delete Fragrance", fragrance });
 });
 
 // Handle Fragrance delete on POST.
 exports.fragrance_delete_post = asyncHandler(async (req, res, next) => {
-  res.send("NOT IMPLEMENTED: Fragrance delete POST");
+  await Fragrance.findByIdAndDelete(req.body.fragranceid);
+  res.redirect("/fragrances");
 });
 
 // Display Fragrance update form on GET.
